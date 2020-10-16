@@ -1,6 +1,6 @@
 ## .Net CyberdropDownloader
 
-This is my Cyberdrop album downloader, written in .Net as little competition to see who could make one 1st. 
+This is my Cyberdrop album downloader, written in .Net as little competition with a friend to see who could make one 1st. 
 
 ### How to use
 
