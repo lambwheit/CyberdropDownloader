@@ -127,9 +127,6 @@ namespace CyberdropDownloader
                     {
                         FileName = Substring(PicLink, "https://f.cyberdrop.cc/", FileExtention);
                     }
-
-                    var wreq = WebRequest.Create("http://mywebsite.com/file1.pdf");
-                    wreq.Timeout = 15000;
                     while (true)
                     {
                         try
