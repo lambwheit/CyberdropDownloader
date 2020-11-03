@@ -4,7 +4,7 @@ This is my Cyberdrop album downloader, written in .Net
 ### NOTES
 - more threads = more instances of the downloader will be run, which means pottentially faster downloads at higher cpu use
 ### Changelog
-- Users can now use threads
+- Users can now change number of threads used
 - Downloader now uses faster download link
 ### How to use
 
