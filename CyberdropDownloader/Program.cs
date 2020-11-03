@@ -54,6 +54,21 @@ namespace CyberdropDownloader
 
         private static async Task Main()
         {
+            int threads = 5;
+            
+            Console.Write("Threads(Default 5): ");
+            try
+            {
+                threads = int.Parse(Console.ReadLine());
+                if(threads<=0)
+                {
+                    threads = 5;
+                }
+            }
+            catch
+            {
+                
+            }
             string[] lines = { };
             try
             {
@@ -96,7 +111,8 @@ namespace CyberdropDownloader
                     }
                     
                 }
-                string pattern = @"<a class=""image"" href=""(.*?)"" target=""_blank"" title=""";
+                //@"<a  
+                string pattern = @"<a id=""file"" href=""(.*?)"" target=""_blank"" title=""";
                 RegexOptions regexOptions = RegexOptions.None;
                 Regex regex = new Regex(pattern, regexOptions);
                 string inputData = htmlCode;
@@ -113,19 +129,19 @@ namespace CyberdropDownloader
                         AlbumPics.Add(MatchParse);
                     }
                 } //get all links
-                ThreadPool.SetMaxThreads(5, 5);
-                ThreadPool.SetMinThreads(5, 5);
+                ThreadPool.SetMaxThreads(threads, threads);
+                ThreadPool.SetMinThreads(threads, threads);
                 Parallel.ForEach(AlbumPics, (string PicLink) =>
                 {
                     string FileName = "";
                     string FileExtention = PicLink.Substring(PicLink.Length - 3);
                     if (PicLink.Contains("cyberdrop.nl"))
                     {
-                        FileName = Substring(PicLink, "https://f.cyberdrop.nl/", FileExtention);
+                        FileName = Substring(PicLink, "https://f.cyberdrop.nl/s/", FileExtention);
                     }
                     else
                     {
-                        FileName = Substring(PicLink, "https://f.cyberdrop.cc/", FileExtention);
+                        FileName = Substring(PicLink, "https://f.cyberdrop.cc/s/", FileExtention);
                     }
                     while (true)
                     {
