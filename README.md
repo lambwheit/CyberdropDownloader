@@ -2,7 +2,7 @@
 
 This is my Cyberdrop album downloader, written in .Net  
 ### NOTES
-- COMPILED VERSION IS CURRENTLY 1 VERSION BEHIND
+- COMPILED VERSION IS CURRENTLY 1 VERSION BEHIND USE VISUAL STUDIO TO COMPILE
 ### Changelog
 - Users can now use threads
 - Downloader now uses faster download link
