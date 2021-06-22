@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -23,7 +23,7 @@ namespace CyberdropDownloader
         {
             while (true)
             {
-                Console.Title = "Downloading: "+AlbumName+" | Pic: "+Downloaded+"/"+ AlbumPics.Count;
+                Console.Title = "Downloading: " + AlbumName + " | Pic: " + Downloaded + "/" + AlbumPics.Count;
             }
         }
 
@@ -55,19 +55,19 @@ namespace CyberdropDownloader
         private static async Task Main()
         {
             int threads = 5;
-            
+
             Console.Write("Threads(Default 5): ");
             try
             {
                 threads = int.Parse(Console.ReadLine());
-                if(threads<=0)
+                if (threads <= 0)
                 {
                     threads = 5;
                 }
             }
             catch
             {
-                
+
             }
             string[] lines = { };
             try
@@ -82,7 +82,7 @@ namespace CyberdropDownloader
             }
             Thread thread = new Thread(new ThreadStart(Title));
             thread.Start();
-            if (lines.Length == 0 || lines.Length == null)
+            if (lines?.Length == 0)
             {
                 Console.WriteLine("[Error] no album links found, press enter to exit");
                 Console.ReadLine();
@@ -97,7 +97,7 @@ namespace CyberdropDownloader
                     {
                         htmlCode = client.DownloadString(AlbumLink);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         if (e.ToString().Contains("(404) Not Found"))
                         {
@@ -109,18 +109,19 @@ namespace CyberdropDownloader
                             break;
                         }
                     }
-                    
+
                 }
                 //@"<a  
-                string pattern = @"<a id=""file"" href=""(.*?)"" target=""_blank"" title=""";
+                string pattern = @"<a class=""image"" href=""(.*?)"" target=""_blank""";
                 RegexOptions regexOptions = RegexOptions.None;
                 Regex regex = new Regex(pattern, regexOptions);
                 string inputData = htmlCode;
                 AlbumName = Substring(htmlCode, "<h1 id=\"title\" class=\"title has-text-centered\" title=\"", "\"");
                 if (Directory.Exists("Downloads\\" + AlbumName)) continue;
                 Directory.CreateDirectory("Downloads\\" + AlbumName);
-                AlbumPics.Clear();
+                AlbumPics?.Clear();
                 Downloaded = 0;
+
                 foreach (Match match in regex.Matches(inputData))
                 {
                     if (match.Success)
@@ -131,27 +132,23 @@ namespace CyberdropDownloader
                 } //get all links
                 ThreadPool.SetMaxThreads(threads, threads);
                 ThreadPool.SetMinThreads(threads, threads);
+
                 Parallel.ForEach(AlbumPics, (string PicLink) =>
                 {
-                    string FileName = "";
-                    string FileExtention = PicLink.Substring(PicLink.Length - 3);
-                    if (PicLink.Contains("cyberdrop.nl"))
-                    {
-                        FileName = Substring(PicLink, "https://f.cyberdrop.nl/s/", FileExtention);
-                    }
-                    else
-                    {
-                        FileName = Substring(PicLink, "https://f.cyberdrop.cc/s/", FileExtention);
-                    }
+
+                    var url = new Uri(PicLink);
+                    var filename = url.LocalPath;
+                    //FAST LINK CURRENTLY BROKEN
+                    //var fastPicLink = "https://"+Substring(PicLink, "https://", "/")+"/s"+filename;
                     while (true)
                     {
                         try
                         {
                             using (WebClient webClient = new MyWebClient())
                             {
-                                webClient.DownloadFile(PicLink, "Downloads\\"+AlbumName + "\\" + FileName + FileExtention);
+                                webClient.DownloadFile(PicLink, "Downloads\\" + AlbumName + "\\" + filename);
                                 Downloaded++;
-                                Console.WriteLine("Downloaded: "+AlbumName+" | "+ FileName + FileExtention);
+                                Console.WriteLine("Downloaded: " + AlbumName + " | " + filename);
                             }
                             break;
                         }
@@ -159,6 +156,7 @@ namespace CyberdropDownloader
                         {
                         }
                     }
+
 
                 });
             }
