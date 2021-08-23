@@ -117,6 +117,7 @@ namespace CyberdropDownloader
                 Regex regex = new Regex(pattern, regexOptions);
                 string inputData = htmlCode;
                 AlbumName = Substring(htmlCode, "<h1 id=\"title\" class=\"title has-text-centered\" title=\"", "\"");
+                AlbumName = string.Concat(AlbumName.Split(Path.GetInvalidFileNameChars()));
                 if (Directory.Exists("Downloads\\" + AlbumName)) continue;
                 Directory.CreateDirectory("Downloads\\" + AlbumName);
                 AlbumPics?.Clear();
