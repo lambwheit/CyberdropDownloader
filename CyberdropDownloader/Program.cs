@@ -111,7 +111,8 @@ namespace CyberdropDownloader
                     }
 
                 }
-                //@"<a  
+                //regex to extract fast link when it's back
+                //<a class="image" href=".*?" target="_blank" (.*?)data-poster=
                 string pattern = @"<a class=""image"" href=""(.*?)"" target=""_blank""";
                 RegexOptions regexOptions = RegexOptions.None;
                 Regex regex = new Regex(pattern, regexOptions);
