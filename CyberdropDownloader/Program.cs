@@ -5,6 +5,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CyberdropDownloader
 {
@@ -52,7 +54,7 @@ namespace CyberdropDownloader
         private static int Downloaded = 0;
         private static List<string> AlbumPics = new List<string>();
 
-        private static async Task Main()
+        private static void Main()
         {
             int threads = 5;
 
@@ -109,13 +111,7 @@ namespace CyberdropDownloader
                             break;
                         }
                     }
-
                 }
-                //regex to extract fast link when it's back
-                //<a class="image" href=".*?" target="_blank" (.*?)data-poster=
-                string pattern = @"<a class=""image"" href=""(.*?)"" target=""_blank""";
-                RegexOptions regexOptions = RegexOptions.None;
-                Regex regex = new Regex(pattern, regexOptions);
                 string inputData = htmlCode;
                 AlbumName = Substring(htmlCode, "<h1 id=\"title\" class=\"title has-text-centered\" title=\"", "\"");
                 AlbumName = string.Concat(AlbumName.Split(Path.GetInvalidFileNameChars()));
@@ -123,15 +119,15 @@ namespace CyberdropDownloader
                 Directory.CreateDirectory("Downloads\\" + AlbumName);
                 AlbumPics?.Clear();
                 Downloaded = 0;
-
-                foreach (Match match in regex.Matches(inputData))
+                //LINK FIX
+                string json = Substring(htmlCode, "dynamicEl: ", "})");
+                JArray o = JArray.Parse(json);
+                foreach (var VARIABLE in o)
                 {
-                    if (match.Success)
-                    {
-                        string MatchParse = Substring(match.ToString(), "<a class=\"image\" href=\"", "\"");
-                        AlbumPics.Add(MatchParse);
-                    }
-                } //get all links
+                    AlbumPics.Add(VARIABLE["downloadUrl"].ToString());
+
+                }
+
                 ThreadPool.SetMaxThreads(threads, threads);
                 ThreadPool.SetMinThreads(threads, threads);
 
@@ -148,6 +144,9 @@ namespace CyberdropDownloader
                         {
                             using (WebClient webClient = new MyWebClient())
                             {
+                                webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0");
+                                webClient.Headers.Add("Host", "fs-02.cyberdrop.me");
+                                webClient.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
                                 webClient.DownloadFile(PicLink, "Downloads\\" + AlbumName + "\\" + filename);
                                 Downloaded++;
                                 Console.WriteLine("Downloaded: " + AlbumName + " | " + filename);
