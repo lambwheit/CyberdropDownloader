@@ -7,6 +7,7 @@ This is my Cyberdrop album downloader, written in .Net
 - Users can now change number of threads used <- added in v1.1
 - ~~Downloader now uses faster download link <- added in v.1~~ Currently Broken
 - Updated Regex <- added in v1.2
+- Changed download link scraping to use json instead of regex = increased reliability <- added in v1.3
 
 ### How to use
 
